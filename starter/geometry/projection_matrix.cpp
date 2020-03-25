@@ -26,6 +26,8 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 #include <math/linear_algebra.h>
 #include "projection_matrix.h"
 
+#include <opencv_compatibility.h>
+
 using namespace std;
 
 projection_matrix::projection_matrix(void)

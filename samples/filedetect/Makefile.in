@@ -176,7 +176,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 EXTRA_DIST = a.jpg b.jpg c.jpg d.jpg e.jpg f.jpg model.jpg printme.jpg
 filedetect_CXXFLAGS = @OPENCV_CFLAGS@ -I@top_srcdir@/garfeild -I@top_srcdir@/starter
-filedetect_LDADD = @OPENCV_LIBS@ ../../garfeild/libgarfeild.a ../../starter/libstarter.a
+filedetect_LDADD = @OPENCV_LIBS@ ../../garfeild/libgarfeild.a  -lopencv_imgproc -lopencv_calib3d  -lopencv_imgcodecs ../../starter/libstarter.a
 filedetect_SOURCES = filedetect.cpp
 all: all-am
 

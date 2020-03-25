@@ -18,6 +18,8 @@ You should have received a copy of the GNU General Public License along with
 BazAR; if not, write to the Free Software Foundation, Inc., 51 Franklin
 Street, Fifth Floor, Boston, MA 02110-1301, USA 
 */
+
+
 #include <sys/stat.h> // for mkdir()
 #include <fstream>
 #include <algorithm>
@@ -26,12 +28,14 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 #include <direct.h> // for _mkdir()
 #endif
 
-using namespace std;
 
+
+using namespace std;
 #include <starter.h>
 #include <keypoints/yape.h>
-#include "planar_object_recognizer.h"
+#include <opencv_compatibility.h>
 
+#include "planar_object_recognizer.h"
 planar_object_recognizer::planar_object_recognizer()
 {
   forest = 0;

@@ -3,6 +3,7 @@
 #include <highgui.h>
 #include "CamCalibration.h"
 #include <optimization/ls_minimizer2.h>
+#include <opencv_compatibility.h>
 
 /**
 \brief Calculates gradient.

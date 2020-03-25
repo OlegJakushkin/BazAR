@@ -175,7 +175,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 interactive_CXXFLAGS = @OPENCV_CFLAGS@ -I@top_srcdir@/garfeild -I@top_srcdir@/starter
-interactive_LDADD = @OPENCV_LIBS@ ../../garfeild/libgarfeild.a ../../starter/libstarter.a
+interactive_LDADD = @OPENCV_LIBS@ ../../garfeild/libgarfeild.a  -lopencv_imgproc -lopencv_calib3d  -lopencv_imgcodecs  ../../starter/libstarter.a
 interactive_SOURCES = interactive.cpp
 all: all-am
 
