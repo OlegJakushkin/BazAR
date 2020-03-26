@@ -2,7 +2,7 @@ from osrf/ros:kinetic-desktop-full
 
 #install SSH
 run apt-get -y update && apt-get update --fix-missing && apt-get upgrade -y
-run apt-get install -y gdb rsync git nano htop mc wget curl youtube-dl
+run apt-get install -y gdb rsync git nano htop mc wget curl youtube-dl automake
 run youtube-dl -U
 
 run \
@@ -32,6 +32,6 @@ run \
 #build BazAR
 run git clone --recursive https://github.com/OlegJakushkin/BazAR
 WORKDIR ./BazAR
-run ./configure --prefix=/usr
-run make
+run ls && chmod a+x ./configure && ./configure --prefix=/usr
+run make -j $(nproc)
 run make install
