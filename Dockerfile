@@ -34,4 +34,4 @@ run git clone --recursive https://github.com/OlegJakushkin/BazAR
 WORKDIR ./BazAR
 run ls && chmod a+x ./configure && ./configure --prefix=/usr
 run make -j $(nproc)
-run make install
+run ls && chmod a+x ./install-sh && make install
