@@ -1,12 +1,12 @@
 # Prerequisites
 *.d
-
+*.avi
 # Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
-
+*.cache/
 # Precompiled Headers
 *.gch
 *.pch

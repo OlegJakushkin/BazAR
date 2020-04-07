@@ -2,8 +2,8 @@ from osrf/ros:kinetic-desktop-full
 
 #install SSH
 run apt-get -y update && apt-get update --fix-missing && apt-get upgrade -y
-run apt-get install -y gdb rsync git nano htop mc wget curl youtube-dl automake
-run youtube-dl -U
+run apt-get install -y gdb rsync git nano htop mc wget curl automake ffmpeg
+run curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/bin/youtube-dl && chmod a+rx /usr/bin/youtube-dl
 
 run \
     wget https://github.com/Itseez/opencv/archive/3.2.0.zip && \
@@ -35,3 +35,8 @@ WORKDIR ./BazAR
 run ls && chmod a+x ./configure && ./configure --prefix=/usr
 run make -j $(nproc)
 run ls && chmod a+x ./install-sh && make install
+
+#test
+run youtube-dl -f 'bestvideo[height>=480]' --postprocessor-args "-ss 0:0:12 -to 0:0:30"  --hls-prefer-ffmpeg   --recode-video avi --output "v.%(ext)s"  https://www.youtube.com/watch?v=85qx_nPiKNE
+#run samples/singlecalib/cli v.avi
+
