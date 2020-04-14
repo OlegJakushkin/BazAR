@@ -11,5 +11,5 @@ augment3d_LDADD=@OPENCV_LIBS@ ../../garfeild/libgarfeild.a -lopencv_imgproc ../.
 augment3d_SOURCES=augment3d.cpp
 
 cli_CXXFLAGS=@OPENCV_CFLAGS@ -I@top_srcdir@/garfeild -I@top_srcdir@/starter
-cli_LDADD=@OPENCV_LIBS@ ../../garfeild/libgarfeild.a -lopencv_imgproc -lopencv_calib3d  -lopencv_imgcodecs ../../starter/libstarter.a
-cli_SOURCES=gms_matcher.h cli.cpp
+cli_LDADD=@OPENCV_LIBS@  -lopencv_highgui ../../garfeild/libgarfeild.a -lopencv_highgui  -lopencv_imgproc -lopencv_calib3d  -lopencv_imgcodecs ../../starter/libstarter.a
+cli_SOURCES=cli.cpp

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-SOURCES = $(augment3d_SOURCES) $(singlecalib_SOURCES)
+SOURCES = $(augment3d_SOURCES) $(singlecalib_SOURCES) $(cli_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -38,7 +38,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = singlecalib$(EXEEXT) augment3d$(EXEEXT)
+noinst_PROGRAMS = singlecalib$(EXEEXT) augment3d$(EXEEXT) cli$(EXEEXT)
 subdir = samples/singlecalib
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -54,6 +54,10 @@ am_augment3d_OBJECTS = augment3d-augment3d.$(OBJEXT)
 augment3d_OBJECTS = $(am_augment3d_OBJECTS)
 augment3d_DEPENDENCIES = ../../garfeild/libgarfeild.a \
 	../../starter/libstarter.a
+am_cli_OBJECTS = cli-cli.$(OBJEXT)
+cli_OBJECTS = $(am_cli_OBJECTS)
+cli_DEPENDENCIES = ../../garfeild/libgarfeild.a \
+	../../starter/libstarter.a
 am_singlecalib_OBJECTS = singlecalib-singlecalib.$(OBJEXT)
 singlecalib_OBJECTS = $(am_singlecalib_OBJECTS)
 singlecalib_DEPENDENCIES = ../../garfeild/libgarfeild.a \
@@ -66,8 +70,8 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(augment3d_SOURCES) $(singlecalib_SOURCES)
-DIST_SOURCES = $(augment3d_SOURCES) $(singlecalib_SOURCES)
+SOURCES = $(augment3d_SOURCES) $(singlecalib_SOURCES) $(cli_SOURCES)
+DIST_SOURCES = $(augment3d_SOURCES) $(singlecalib_SOURCES) $(cli_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -86,7 +90,7 @@ CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ -std=c++14
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -184,6 +188,9 @@ singlecalib_SOURCES = singlecalib.cpp
 augment3d_CXXFLAGS = @OPENCV_CFLAGS@ -I@top_srcdir@/garfeild -I@top_srcdir@/starter
 augment3d_LDADD = @OPENCV_LIBS@ ../../garfeild/libgarfeild.a  -lopencv_imgproc -lopencv_calib3d  -lopencv_imgcodecs ../../starter/libstarter.a
 augment3d_SOURCES = augment3d.cpp
+cli_CXXFLAGS = @OPENCV_CFLAGS@ -I@top_srcdir@/garfeild -I@top_srcdir@/starter
+cli_LDADD = @OPENCV_LIBS@ ../../garfeild/libgarfeild.a -lopencv_highgui  -lopencv_imgproc -lopencv_calib3d  -lopencv_imgcodecs ../../starter/libstarter.a
+cli_SOURCES = cli.cpp
 all: all-am
 
 .SUFFIXES:
@@ -220,9 +227,12 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-augment3d$(EXEEXT): $(augment3d_OBJECTS) $(augment3d_DEPENDENCIES) 
+augment3d$(EXEEXT): $(augment3d_OBJECTS) $(augment3d_DEPENDENCIES)
 	@rm -f augment3d$(EXEEXT)
 	$(CXXLINK) $(augment3d_LDFLAGS) $(augment3d_OBJECTS) $(augment3d_LDADD) $(LIBS)
+cli$(EXEEXT): $(cli_OBJECTS) $(cli_DEPENDENCIES)
+	@rm -f cli$(EXEEXT)
+	$(CXXLINK) $(cli_LDFLAGS) $(cli_OBJECTS) $(cli_LDADD) $(LIBS)
 singlecalib$(EXEEXT): $(singlecalib_OBJECTS) $(singlecalib_DEPENDENCIES) 
 	@rm -f singlecalib$(EXEEXT)
 	$(CXXLINK) $(singlecalib_LDFLAGS) $(singlecalib_OBJECTS) $(singlecalib_LDADD) $(LIBS)
@@ -234,6 +244,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/augment3d-augment3d.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cli-cli.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/singlecalib-singlecalib.Po@am__quote@
 
 .cpp.o:
@@ -249,6 +260,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+cli-cli.o: cli.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cli_CXXFLAGS) $(CXXFLAGS) -MT cli-cli.o -MD -MP -MF "$(DEPDIR)/cli-cli.Tpo" -c -o cli-cli.o `test -f 'cli.cpp' || echo '$(srcdir)/'`cli.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/cli-cli.Tpo" "$(DEPDIR)/cli-cli.Po"; else rm -f "$(DEPDIR)/cli-cli.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='cli.cpp' object='cli-cli.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cli_CXXFLAGS) $(CXXFLAGS) -c -o cli-cli.o `test -f 'cli.cpp' || echo '$(srcdir)/'`cli.cpp
+
+cli-cli.obj: cli.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cli_CXXFLAGS) $(CXXFLAGS) -MT cli-cli.obj -MD -MP -MF "$(DEPDIR)/cli-cli.Tpo" -c -o cli-cli.obj `if test -f 'cli.cpp'; then $(CYGPATH_W) 'cli.cpp'; else $(CYGPATH_W) '$(srcdir)/cli.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/cli-cli.Tpo" "$(DEPDIR)/cli-cli.Po"; else rm -f "$(DEPDIR)/cli-cli.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='cli.cpp' object='cli-cli.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(cli_CXXFLAGS) $(CXXFLAGS) -c -o cli-cli.obj `if test -f 'cli.cpp'; then $(CYGPATH_W) 'cli.cpp'; else $(CYGPATH_W) '$(srcdir)/cli.cpp'; fi`
 
 augment3d-augment3d.o: augment3d.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(augment3d_CXXFLAGS) $(CXXFLAGS) -MT augment3d-augment3d.o -MD -MP -MF "$(DEPDIR)/augment3d-augment3d.Tpo" -c -o augment3d-augment3d.o `test -f 'augment3d.cpp' || echo '$(srcdir)/'`augment3d.cpp; \
