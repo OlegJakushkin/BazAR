@@ -32,25 +32,33 @@ void usage(const char *s) {
     exit(1);
 }
 
-int main( int argc, char** argv )
+Mat ReadCameraC(string filename = "camera_c.txt")
 {
-    const char *captureSrc = "./video.avi";
+    int rows = 3, cols = 3;
+    double m;
+    Mat out = Mat::zeros(rows, cols, CV_64FC1);//Matrix to store values
 
-    // parse command line
-    for (int i=1; i<argc; i++) {
-        if (argv[i][0]=='-') {
-            usage(argv[0]);
-        } else {
-            captureSrc = argv[i];
-        }
+    ifstream fileStream(filename);
+    string trash;
+    for(int i = 0; i<6; ++i) {
+        fileStream >> trash;
     }
+    int cnt = 0;//index starts from 0
+    while (fileStream >> m)
+    {
+        int temprow = cnt / cols;
+        int tempcol = cnt % cols;
+        out.at<double>(temprow, tempcol) = m;
+        cnt++;
+    }
+    return out;
+}
 
-    VideoCapture capture(captureSrc);
-
+void RunBazAR(VideoCapture & capture) {
     if( !capture.isOpened() )
     {
-        cerr <<"Could not initialize capturing from " << captureSrc << " ...\n";
-        return -1;
+        cerr <<"Could not initialize capturing from file ...\n";
+        throw runtime_error("bad input video file");
     }
 
     CamCalibration calib;
@@ -65,17 +73,18 @@ int main( int argc, char** argv )
     for(;;)
     {
         // acquire image
-        Mat img1, img2;
+        Mat img1c, img2c, img1, img2;
 
-        capture >> img1;
-        if (img1.empty()) {
+        capture >> img1c;
+        if (img1c.empty()) {
             break;
         }
-
-        capture >> img2;
-        if (img2.empty()) {
+        cvtColor(img1c,  img1, COLOR_BGR2GRAY);
+        capture >> img2c;
+        if (img2c.empty()) {
             break;
         }
+        cvtColor(img2c,  img2, COLOR_BGR2GRAY);
 
         //Detect all features
         vector<KeyPoint> kp1, kp2;
@@ -111,7 +120,6 @@ int main( int argc, char** argv )
                 matches_gms.push_back(matches_all[i]);
             }
         }
-
         //-- Localize the object
         std::vector<Point2f> obj;
         std::vector<Point2f> scene;
@@ -143,7 +151,7 @@ int main( int argc, char** argv )
             scene2.push_back( scene[i] );
         }
 
-        Mat H = findHomography( obj2, scene2, RANSAC );
+        //Mat H = findHomography( obj2, scene2, RANSAC );
 
         // run the detector
         static std::vector<CamCalibration::s_struct_points> bpts;
@@ -152,8 +160,7 @@ int main( int argc, char** argv )
         for (int i=0; i<pts; ++i) {
             bpts.push_back(CamCalibration::s_struct_points(obj2[i].x, obj2[i].y, scene2[i].x, scene2[i].y));
         }
-        CvMat cH = H;
-        calib.AddHomography(0, bpts, &cH );
+        calib.AddHomography(0, bpts, nullptr );
 
         nbHomography++;
         cout << nbHomography << " homographies.\n";
@@ -173,9 +180,44 @@ int main( int argc, char** argv )
                     3   //postfilter eps
             )) {
                 calib.PrintOptimizedResultsToFile1();
+
                 break;
             }
         }
     }
+}
+
+
+int main( int argc, char** argv )
+{
+    const char *captureSrc = "./video.avi";
+
+    // parse command line
+    for (int i=1; i<argc; i++) {
+        if (argv[i][0]=='-') {
+            usage(argv[0]);
+        } else {
+            captureSrc = argv[i];
+        }
+    }
+
+    VideoCapture capture(captureSrc);
+    RunBazAR(capture);
+
+    /*
+    if( !capture.isOpened() )
+    {
+        cerr <<"Could not initialize capturing from " << captureSrc << " ...\n";
+        return -1;
+    }
+    auto cam_k = ReadCameraC();
+
+    Mat frame, out_frame;
+    capture >> frame;
+
+    undistort(frame, out_frame, cam_k, noArray(), getDefaultNewCameraMatrix(cam_k, Size(1920, 1080), true));
+    imwrite("in.png", frame);
+    imwrite("out.png", out_frame);
+    */
     return 0;
 }

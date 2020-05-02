@@ -2196,18 +2196,18 @@ void CamCalibration::PrintOptimizedResultErrors( double *params){
             sprintf( info, "Maximal Camera Error in Pixel over homographies", 0 );  
             cvPutText( im, info, cvPoint( 150,30 ), &font, CV_RGB ( 200,255,100 ) );
 
-            /*
+
             // Print errorgraphic to file:
             char file_name[200];
             sprintf( file_name, "error_graphic_%02d.jpg", cam->errorgraphic_counter++ );
             cvSaveImage( file_name, im );
-            */
-            IplImage *im2 = cvCreateImage(cvSize(800,600), IPL_DEPTH_8U, 3); //TODO: Hier echte groesse von parametern!
-            cvResize(im, im2, CV_INTER_LINEAR );
-            cvShowImage( "Error Histogram", im2 );
-            cvWaitKey(10);
+
+            //IplImage *im2 = cvCreateImage(cvSize(800,600), IPL_DEPTH_8U, 3); //TODO: Hier echte groesse von parametern!
+            //cvResize(im, im2, CV_INTER_LINEAR );
+            //cvShowImage( "Error Histogram", im2 );
+            //cvWaitKey(10);
             cvReleaseImage( &im );
-            cvReleaseImage( &im2 );
+            //cvReleaseImage( &im2 );
             //printf( "File error_graphic_%02d.jpg successfully stored!\n\n", cam->errorgraphic_counter );
             printf( "==================================================\n" );
     } else {
@@ -2283,8 +2283,8 @@ bool CamCalibration::OptimizeCalibrationByMinimalParameterMethod( int iter, doub
 
   // Reset counter for error histogram and create an output window:
   errorgraphic_counter = 0;
-  cvNamedWindow( "Error Histogram", CV_WINDOW_AUTOSIZE );
-  cvWaitKey(10);
+  //cvNamedWindow( "Error Histogram", CV_WINDOW_AUTOSIZE );
+  //cvWaitKey(10);
 
   // Start calibration:
   //double post_filter_offset = 20;
@@ -2351,7 +2351,7 @@ bool CamCalibration::OptimizeCalibrationByMinimalParameterMethod( int iter, doub
   } while( FilterHomographiesAfterOptimization( p_PostFilter/*+post_filter_offset*/ ) );
 
   // Destroy histogram output window:
-  cvDestroyAllWindows();
+  //cvDestroyAllWindows();
   return true;
 }
 
